@@ -1,29 +1,32 @@
-# README #
+# Deployment for Infrastructure for implementing a cluster with default values
 
-This README would normally document whatever steps are necessary to get your application up and running.
+This repo contains all the code required to deploy & configure a AKS cluster latest version
+This is using service principal for application and storage for keeping terraform state
 
-### What is this repository for? ###
+## Key features
 
-* Quick summary
-* Version
-* [Learn Markdown](https://bitbucket.org/tutorials/markdowndemo)
+* AKS cluster of three nodes in Northern Region
+* Linux OS with 30 gb disk
 
-### How do I get set up? ###
 
-* Summary of set up
-* Configuration
-* Dependencies
-* Database configuration
-* How to run tests
-* Deployment instructions
+## Possible Improvements or Security issue
+* Security key not encrypted, will need to use Vault 
+* Disaster Recovery
+* MakeFile
 
-### Contribution guidelines ###
+### Pre-requisites
 
-* Writing tests
-* Code review
-* Other guidelines
+1. terraform
 
-### Who do I talk to? ###
+1. az (Azure CLI)
 
-* Repo owner or admin
-* Other community or team contact
+1. kubectl
+
+1. Storage setup using tstate
+
+### Deploying
+
+1. Clone the [patrickguyrodies/k8cluster](bitbucket.org:patrickguyrodies/k8cluster.git) repo and cd into the root of the repo.
+
+1. Initialise state and Import stateful resources
+    
