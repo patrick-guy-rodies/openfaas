@@ -1,30 +1,27 @@
-# Deployment for Infrastructure for implementing a cluster with default values
+# OpenFaaS implementation with TLS
 
-This repo contains all the code required to deploy & configure a AKS cluster latest version
-This is using service principal for application and storage for keeping terraform state
+This repo contains Yaml file to install OpenFaaS with TLS. Certificate is from LetsEncrypt, Domain used is from freenom and DNS from Azure
 
 ## Key features
 
-* AKS cluster of three nodes in Northern Region
-* Linux OS with 30 gb disk
+* LetsEncrypt certificate
+* DNS Azure service
+* Domain name from Free service called freenom
+* No use of Helm - :-)
 
 
-## Possible Improvements or Security issue
-* Security key not encrypted, will need to use Vault 
+## Possible Improvements
 * Disaster Recovery
 * MakeFile
 
 ### Pre-requisites
 
-1. terraform
-
-1. az (Azure CLI)
+1. Cluster on AKS
 
 1. kubectl
 
-1. Storage setup using tstate
+### Creating Domain name
 
-### Deploying
 
 1. Clone the [patrickguyrodies/k8cluster](bitbucket.org:patrickguyrodies/k8cluster.git) repo and cd into the root of the repo.
 
