@@ -45,3 +45,21 @@ You should see the following output:
                 Output
                 service/echo1 created
                 deployment.apps/echo1 created
+
+Verify that the Service started correctly by confirming that it has a ClusterIP, the internal IP on which the Service is exposed:
+
+                $ kubectl get svc echo1
+
+You should see the following output:
+
+                Output
+                NAME      TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)   AGE
+                echo1     ClusterIP   10.245.222.129   <none>        80/TCP    60s
+
+This indicates that the echo1 Service is now available internally at 10.245.222.129 on port 80. It will forward traffic to containerPort 5678 on the Pods it selects.
+
+Now that the echo1 Service is up and running, repeat this process for the echo2 Service.
+> Both backend services are installed under Default namespaces. We are using them as example for our ingress.
+
+### Setting Up the Kubernetes Nginx Ingress Controller
+
