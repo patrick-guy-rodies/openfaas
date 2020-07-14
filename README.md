@@ -16,14 +16,32 @@ This repo contains Yaml file to install OpenFaaS with TLS. Certificate is from L
 
 ### Pre-requisites
 
-1. Cluster on AKS
+1. A Kubernetes 1.10+ cluster with role-based access control (RBAC) enabled
 
-1. kubectl
+1. The kubectl command-line tool installed on your local machine and configured to connect to your cluster. You can read more about installing kubectl in the official documentation.
+
+1. The wget command-line utility installed on your local machine. You can install wget using the package manager built into your operating system.
+Once you have these components set up, you’re ready to begin with this guide.
 
 ### Creating Domain name
 
+Using a registar such as https://my.freenom.com/ create a domain. For this example, we will be using pgr095.tk domain. As you can see I have used Maersk UID.
 
-1. Clone the [patrickguyrodies/k8cluster](bitbucket.org:patrickguyrodies/k8cluster.git) repo and cd into the root of the repo.
+### Use Repo for tutorial
+1. Clone the [patrickguyrodies/k8cluster](bitbucket.org:patrickguyrodies/openfaas.git) repo and cd into the root of the repo.
 
-1. Initialise state and Import stateful resources
-    
+### Setting Up Dummy Backend Services
+Before we deploy the Ingress Controller, we’ll first create and roll out two dummy echo Services to which we’ll route external traffic using the Ingress. The echo Services will run the [hashicorp/http-echo](https://hub.docker.com/r/hashicorp/http-echo/) web server container, which returns a page containing a text string passed in when the web server is launched. To learn more about http-echo, consult its [GitHub Repo] (https://github.com/hashicorp/http-echo), and to learn more about Kubernetes Services, consult Services from the official Kubernetes docs.
+
+Check echo1.yaml file inside repo
+                $ nano echo1.yaml
+
+Create the Kubernetes resources using kubectl apply with the -f flag, specifying the file you just saved as a parameter:
+
+                $ kubctl apply -f echo1.yaml
+
+You should see the following output:
+
+                Output
+                service/echo1 created
+                deployment.apps/echo1 created
