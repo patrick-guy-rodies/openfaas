@@ -30,6 +30,13 @@ Using a registar such as https://my.freenom.com/ create a domain. For this examp
 ### Use Repo for tutorial
 1. Clone the [patrickguyrodies/k8cluster](bitbucket.org:patrickguyrodies/openfaas.git) repo and cd into the root of the repo.
 
+### Install the faas-cli
+The CLI is also available on brew for MacOS users, however it may lag behind by a few releases:
+
+
+                $brew install faas-cli
+
+
 ### Setting Up Dummy Backend Services
 Before we deploy the Ingress Controller, we’ll first create and roll out two dummy echo Services to which we’ll route external traffic using the Ingress. The echo Services will run the [hashicorp/http-echo](https://hub.docker.com/r/hashicorp/http-echo/) web server container, which returns a page containing a text string passed in when the web server is launched. To learn more about http-echo, consult its [GitHub Repo] (https://github.com/hashicorp/http-echo), and to learn more about Kubernetes Services, consult Services from the official Kubernetes docs.
 
@@ -59,7 +66,8 @@ You should see the following output:
 This indicates that the echo1 Service is now available internally at 10.245.222.129 on port 80. It will forward traffic to containerPort 5678 on the Pods it selects.
 
 Now that the echo1 Service is up and running, repeat this process for the echo2 Service.
-> Both backend services are installed under Default namespaces. We are using them as example for our ingress.
+> Both backend services are installed under Default namespaces. We are using them as examples for our ingress.
 
 ### Setting Up the Kubernetes Nginx Ingress Controller
+
 
