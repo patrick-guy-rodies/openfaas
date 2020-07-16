@@ -176,9 +176,9 @@ Next, we’ll install cert-manager and its Custom Resource Definitions (CRDs) li
 
 1. List 1
 
-```bash
-$ kubectl apply --validate=false -f https://github.com/jetstack/cert-manager/releases/download/v0.15.2/cert-manager.yaml
-```
+
+                $ kubectl apply --validate=false -f https://github.com/jetstack/cert-manager/releases/download/v0.15.2/cert-manager.yaml
+
 1. List 2
 
 Verify our installation by checking cert-manager Namespace for running pods:
