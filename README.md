@@ -171,3 +171,26 @@ This confirms that your request to echo1.pgr095.tk is being correctly routed thr
 Before we install cert-manager, we’ll first create a Namespace for it to run in:
 
                 $ kubectl create namespace cert-manager
+
+Next, we’ll install cert-manager and its Custom Resource Definitions (CRDs) like Issuers and ClusterIssuers. Do this by applying the manifest directly from the cert-manager GitHub repository :
+
+```bash
+$ kubectl apply --validate=false -f https://github.com/jetstack/cert-manager/releases/download/v0.15.2/cert-manager.yaml
+```
+
+Verify our installation by checking cert-manager Namespace for running pods:
+
+                $ kubectl get pods -n cert-manager
+
+Output
+
+                NAME                                       READY   STATUS    RESTARTS   AGE
+                cert-manager-749df5b4f8-94nvn              1/1     Running   0          71s
+                cert-manager-cainjector-67b7c65dff-x2zfs   1/1     Running   0          71s
+                cert-manager-webhook-7d5d8f856b-mfdtd      1/1     Running   0          71s
+
+Before we begin issuing certificates for our Ingress hosts, we need to create an Issuer, which specifies the certificate authority from which signed x509 certificates can be obtained. In this guide, we’ll use the Let’s Encrypt certificate authority, which provides free TLS certificates and offers both a staging server for testing your certificate configuration, and a production server for rolling out verifiable TLS certificates.
+
+Let’s create a test Issuer to make sure the certificate provisioning mechanism is functioning correctly. Open a file named staging_issuer.yaml in your favorite text editor:
+
+                $ nano staging_issuer.yaml
