@@ -14,7 +14,7 @@ This repo contains Yaml file to install OpenFaaS with TLS. Certificate is from L
 * Disaster Recovery
 * MakeFile
 
-### Pre-requisites
+## Pre-requisites
 
 1. A Kubernetes 1.10+ cluster with role-based access control (RBAC) enabled
 
