@@ -35,7 +35,7 @@ You must run two commands: git submodule init to initialize your local configura
 The CLI is also available on brew for MacOS users, however it may lag behind by a few releases:
 
 
-                $brew install faas-cli
+                $ brew install faas-cli
 
 ### Deploy using kubectl and plain YAML
 
@@ -109,3 +109,65 @@ Now that the echo1 Service is up and running, repeat this process for the echo2 
 ### Setting Up the Kubernetes Nginx Ingress Controller
 
 
+We’ll begin by first creating the Kubernetes resources required by the Nginx Ingress Controller. These consist of ConfigMaps containing the Controller’s configuration, Role-based Access Control (RBAC) Roles to grant the Controller access to the Kubernetes API, and the actual Ingress Controller Deployment which uses v0.34.0 of the Nginx Ingress Controller image. To see a full list of these required resources, consult the manifest from the Kubernetes Nginx Ingress Controller’s GitHub repo.
+
+To create these mandatory resources, use kubectl apply and the -f flag to specify the manifest file hosted on GitHub:
+
+                $ kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v0.34.0/deploy/static/provider/cloud/deploy.yaml
+
+Confirm that the Ingress Controller Pods have started
+
+                $ kubectl get pods --all-namespaces -l app.kubernetes.io/name=ingress-nginx
+
+Check that the Azure LoadBalancer has been created
+
+                $ kubectl get svc --namespace=ingress-nginx
+
+You should see
+
+                Output
+                NAME            TYPE           CLUSTER-IP      EXTERNAL-IP       PORT(S)                      AGE
+                ingress-nginx   LoadBalancer   10.245.247.67   203.0.113.0   80:32486/TCP,443:32096/TCP   20h
+
+We can now point our DNS records at this external Load Balancer and create some Ingress Resources to implement traffic routing rules.
+
+### Create the Ingress Resource
+
+Let’s begin by creating a minimal Ingress Resource to route traffic directed at a given subdomain to a corresponding backend Service.
+
+In this guide, we’ll use the test domain pgr095.tk. You should substitute this with the domain name you own.
+
+We’ll first create a simple rule to route traffic directed at echo1.pgr095.tk to the echo1 backend service.
+
+Begin by opening up a file called echo_ingress.yaml in your favorite editor:
+
+                $nano echo_ingress.yaml
+
+You can now create the Ingress using kubectl:
+
+                $ kubectl apply -f echo_ingress.yaml
+You’ll see the following output confirming the Ingress creation:
+
+                Output
+                ingress.extensions/echo-ingress created
+
+To test the Ingress, navigate to your DNS management service and create A records for echo1.pgr095.tk pointing to the Azure Load Balancer’s external IP. The Load Balancer’s external IP is the external IP address for the ingress-nginx Service, which we fetched in the previous step. 
+
+Once you’ve created the necessary echo1.pgr095.tk DNS records, you can test the Ingress Controller and Resource you’ve created using the curl command line utility.
+
+From your local machine, curl the echo1 Service:
+
+                $ curl echo1.example.com
+
+You should get the following response from the echo1 service:
+
+                Output
+                echo1
+
+This confirms that your request to echo1.pgr095.tk is being correctly routed through the Nginx ingress to the echo1 backend Service.
+
+### Installing and Configuring Cert-Manager
+
+Before we install cert-manager, we’ll first create a Namespace for it to run in:
+
+                $ kubectl create namespace cert-manager
