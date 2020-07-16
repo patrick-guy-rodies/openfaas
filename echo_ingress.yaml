@@ -3,7 +3,14 @@ kind: Ingress
 metadata:
   name: echo-ingress
   namespace: openfaas
+  annotations:  #line to be commented for starting tutorial
+    kubernetes.io/ingress.class: "nginx"  #line to be commented for starting tutorial
+    cert-manager.io/cluster-issuer: "letsencrypt-staging" #line to be commented for starting tutorial
 spec:
+  tls:  #line to be commented for starting tutorial
+  - hosts:  #line to be commented for starting tutorial
+    - echo1.pgr095.tk #line to be commented for starting tutorial
+    secretName: echo-tls  #line to be commented for starting tutorial
   rules:
   - host: echo1.pgr095.tk
     http:

@@ -194,3 +194,70 @@ Before we begin issuing certificates for our Ingress hosts, we need to create an
 Let’s create a test Issuer to make sure the certificate provisioning mechanism is functioning correctly. Open a file named staging_issuer.yaml in your favorite text editor:
 
                 $ nano staging_issuer.yaml
+
+Roll out the ClusterIssuer using kubectl:
+
+                $ kubectl create -f staging_issuer.yaml
+
+You should see the following output:
+
+Output
+
+                clusterissuer.cert-manager.io/letsencrypt-staging created
+
+Now that we’ve created our Let’s Encrypt staging Issuer, we’re ready to modify the Ingress Resource we created above and enable TLS encryption for the echo1.pgr095.tk paths. Uncomment tls lines.
+
+                $ kubectl apply -f echo_ingress.yaml
+
+Output
+                ingress.networking.k8s.io/echo-ingress configured
+
+You can use kubectl describe to track the state of the Ingress changes you’ve just applied:
+
+                $ kubectl -n openfaas describe ingress
+
+Output
+                Events:
+                Type    Reason             Age                  From                      Message
+                ----    ------             ----                 ----                      -------
+                Normal  UPDATE             100s (x2 over 118m)  nginx-ingress-controller  Ingress openfaas/echo-ingress
+                Normal  CreateCertificate  100s                 cert-manager              Successfully created Certificate "echo-tls"
+
+Once certificate created, you can run an additional describe to confirm
+                $ kubectl -n openfaas describe certificate
+
+Output
+                Status:
+                Conditions:
+                    Last Transition Time:  2020-07-16T12:29:54Z
+                    Message:               Certificate is up to date and has not expired
+                    Reason:                Ready
+                    Status:                True
+                    Type:                  Ready
+                Not After:               2020-10-14T11:29:52Z
+                Events:
+                Type    Reason        Age   From          Message
+                ----    ------        ----  ----          -------
+                Normal  GeneratedKey  2m    cert-manager  Generated a new private key
+                Normal  Requested     2m    cert-manager  Created new CertificateRequest resource "echo-tls-1761831726"
+                Normal  Issued        94s   cert-manager  Certificate issued successfully
+
+that HTTPS has successfully been enabled, but the certificate cannot be verified as it’s a fake temporary certificate issued by the Let’s Encrypt staging server.
+
+Lets check our headers to see if we are redirected to port 443 and if the certificate is in place.
+
+                $ wget --save-headers -O- echo1.pgr095.tk
+
+Now that we’ve tested that everything works using this temporary fake certificate, we can roll out production certificates for our host.
+
+### Rolling Out Production Issuer
+
+In this step we’ll modify the procedure used to provision staging certificates, and generate a valid, verifiable production certificate for our Ingress hosts.
+
+To begin, we’ll first create a production certificate ClusterIssuer.
+
+Open a file called prod_issuer.yaml in your favorite editor to check the syntax:
+
+                $nano prod_issuer.yaml
+
+
