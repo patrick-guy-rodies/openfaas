@@ -9,16 +9,9 @@ metadata:
 spec:
   tls:
   - hosts:
-    - echo3.pgr095.tk
     - openfaas.pgr095.tk
-    secretName: echo-tls
+    secretName: openfaas-tls
   rules:
-  - host: echo3.pgr095.tk
-    http:
-      paths:
-      - backend:
-          serviceName: echo3
-          servicePort: 80
   - host: openfaas.pgr095.tk
     http:
       paths:

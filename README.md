@@ -258,6 +258,83 @@ To begin, we’ll first create a production certificate ClusterIssuer.
 
 Open a file called prod_issuer.yaml in your favorite editor to check the syntax:
 
-                $nano prod_issuer.yaml
+                $nano prod-issuer.yaml
 
+Note the different ACME server URL, and the letsencrypt-prod secret key name.
+
+Now, roll out this Issuer using kubectl:
+
+                $ kubectl create -f prod-issuer.yaml
+
+You should see the following output:
+
+Output
+
+                clusterissuer.cert-manager.io/letsencrypt-prod created
+
+Update echo_ingress.yaml to use this new Issuer:
+
+                $ nano echo_ingress.yaml
+
+Make the following change to the file by updating the ClusterIssuer name to letsencrypt-prod.
+
+Once you’re satisfied with your changes, save and close the file.
+
+Roll out the changes using kubectl apply:
+
+                $ kubectl apply -f echo_ingress.yaml
+
+Wait a couple of minutes for the Let’s Encrypt production server to issue the certificate. You can track its progress using kubectl describe on the certificate object:
+
+                $ kubectl describe certificate echo-tls
+
+Output
+
+                Status:
+                Conditions:
+                    Last Transition Time:  2020-07-16T12:49:59Z
+                    Message:               Certificate is up to date and has not expired
+                    Reason:                Ready
+                    Status:                True
+                    Type:                  Ready
+                Not After:               2020-10-14T11:49:59Z
+                Events:
+                Type    Reason        Age                From          Message
+                ----    ------        ----               ----          -------
+                Normal  GeneratedKey  20m                cert-manager  Generated a new private key
+                Normal  Requested     20m                cert-manager  Created new CertificateRequest resource "echo-tls-1761831726"
+                Normal  Requested     36s                cert-manager  Created new CertificateRequest resource "echo-tls-862082456"
+                Normal  Issued        10s (x2 over 20m)  cert-manager  Certificate issued successfully
+                patrick-maersk-macbook:openfaas patrickrodies$ 
+
+Check your HTTPS either using curl or using openfaas portal by invoking the certinfo function (this function is from the openfaas store).
+
+### Rolling Out Production Issuer for openfaas dashboard
+
+Please check openfaas_ingress.yaml file. The only difference will be the name of secret to openfaas-tls
+
+Once check run follow command 
+
+                $ kubectl create -f openfaas_ingress.yaml
+
+Output
+
+                Status:
+                Conditions:
+                    Last Transition Time:  2020-07-16T13:47:12Z
+                    Message:               Certificate is up to date and has not expired
+                    Reason:                Ready
+                    Status:                True
+                    Type:                  Ready
+                Not After:               2020-10-14T12:47:11Z
+                Events:
+                Type    Reason        Age   From          Message
+                ----    ------        ----  ----          -------
+                Normal  GeneratedKey  33s   cert-manager  Generated a new private key
+                Normal  Requested     33s   cert-manager  Created new CertificateRequest resource "openfaas-tls-3421371503"
+                Normal  Issued        5s    cert-manager  Certificate issued successfully
+
+Check new certificate
+
+                $ kubectl -n openfaas describe certificate openfaas-tls
 
